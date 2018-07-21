@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<?xml-stylesheet type="text/css" href="tp2.css"?>
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <title>Jeux de taquin</title>
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+        <script src="tp2.js"></script>
+    </head>
+    <body>
+        <div class="accueil">
+            <fieldset id="formulaire">
+                <legend class="enteteform"> Reglages du jeu </legend>
+                <form>
+                    <div>Adresse URL de votre image
+                        <input type="url" name="imgUrl" id="imgUrl" />
+                        <b>Vos déplacements : </b>
+                        <label id="nbDeplacements"></label>
+                    </div>
+                    <p></p>
+                    <div>Nombre des lignes
+                        <input type="number" min="2" max="6" name="nbLignes" id="nbLignes"/>
+                        Nombre des colonnes
+                        <input type="number" min="2" max="6" name="nbColonnes" id="nbColonnes" />
+                        <label for="afficheNumeros">Afficher les numéros des images</label>
+                        <input type="checkbox" name="afficheNumeros" id="afficheNumeros" />
+                        <button type="button" name="chargeImg" id="chargeImg">Afficher l'image</button>
+                        <button type="button" name="brasse" id="brasse">Brassez les tuiles</button>
+                    </div>
+                </form>
+            </fieldset>
+            <div id="aireJeu">
+            </div>
+            <footer>
+                <label><a href="apropos.xhtml">à propos </a> </label>
+            </footer>
+        </div>
+    </body>
+</html>

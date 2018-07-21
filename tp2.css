@@ -1,0 +1,47 @@
+.accueil {
+    background-color : #871D1D;
+    width : 100%;
+    height : 100%;
+    padding-bottom : 25px;
+}
+
+#formulaire{
+    background-color : #D8F781;
+    padding : 10px;
+}
+
+.enteteform{
+    background-color : #58FAD0;
+}
+
+#aireJeu {
+    margin : auto;
+    width : 600px;
+    height  :600px;
+    background-color : #58FAD0;
+    margin-top: 20px;
+}
+
+footer {
+    margin : auto;
+    margin-top : 15px;
+    width : 600px;
+    height : 25px;
+    text-align : center;
+    background-color : #D8F781;
+}
+
+footer a {
+    text-decoration : none;
+}
+
+footer a:hover {
+    background-color : #58FAD0;
+    font-size : 14pt;
+}
+
+#imgInit {
+    width : 100%;
+    height : 100%;
+    
+}
