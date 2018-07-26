@@ -8,6 +8,7 @@ var champDeplace;
 var nbDeplacements = 1;
 var imgAffiche = false;
 var imgvue;
+var ounissa= true;
 
 function startGame(){
     nbDeplacements = 1;
