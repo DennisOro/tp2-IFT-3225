@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/css" href="tp2.css"?>
 <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
-        <script></script>
+        
         <title>Jeux de taquin</title>
         <script type="text/javascript" src="tp2.js"></script>
     </head>
@@ -24,17 +24,12 @@
                         <input type="number" min="2" max="6" name="nbColonnes" id="nbColonnes" />
                         <label for="afficheNumeros">Afficher les numéros des images</label>
                         <input type="checkbox" name="afficheNumeros" id="afficheNumeros" onclick="montreNumeros(this)" />
-                        <button type="button" name="chargeImg" id="chargeImg" onclick="afficheImg()">Afficher l'image</button>
-                        <button type="button" onclick="effaceImg()">Cacher l'image</button>
+                        <button type="button" name="chargeImg" id="chargeImg" onclick="afficheImage()">Afficher l'image</button>
                         <button type="button" name="brasse" id="brasse" onclick="startGame()">Brassez les tuiles</button>
                     </div>
                 </form>
             </fieldset>
-            <div id="imgOriginal">
-            </div>
             <div id="puzzle">
-            </div>
-            <div id="test">
             </div>
             <div id="victoire"> <!--Message pour le gagnant. Il est invisible de base  -->
                 <h2 >Félicitation vous avez gagné !!</h2>

@@ -1,5 +1,5 @@
 .accueil {
-   background-color: #FFFAF0;
+    background-color: #FFFAF0;
     width : 100%;
     height : 100%;
     padding-bottom : 25px;
@@ -15,7 +15,7 @@
     display:flex;
     flex-direction:column;
     flex-wrap:nowrap;
-    margin-top:12%;
+    margin-top:10px;
     margin-left : 30px;
     margin-right : 30px;
     padding:20px;
@@ -26,27 +26,12 @@
     visibility : hidden;
 }
 
-#imgOriginal{
-    float : right;
-    visibility : hidden;    
-    width : 300px;
-    height : 300px;
-    z-index : 1;
-    margin-right : 30px;
-    margin-top : 50px;
-}
-
 #puzzle{
     position:relative;
     display:flex;
     justify-content:center;
     margin-top:50px;
     z-index:1;
-}
-
-#test{
-    width : 100%;
-    height : 100%;
 }
 
 .enteteform{
@@ -70,30 +55,12 @@ footer {
 }
 
 table {
-    width : 600px;
-    height : 600px;
-    border-style: solid;
     border-width: 5px;
     border-color : #B8AEA1;
     background-color:#B8AEA2;
     border-radius: 5px;
 }
 
-tr{
-    background-color:#B8AEA2;
-}
-
-td{
-    height:150px;
-    width:150px;
-    background-color: white;
-    text-align: center;
-    align-items: center;
-    font-size: 25px;
-    border-style: solid;
-    border-width: 1px;
-    border-color:grey;
-}
 
 span {
     visibility : hidden;
@@ -101,8 +68,8 @@ span {
 }
 .numbers{
     position : absolute;
-    z-index:1;
-    font-size : 30px;
+    z-index:2;
+    font-size : 15px;
     background-color : white;
     display : block;
 }

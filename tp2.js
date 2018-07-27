@@ -1,35 +1,25 @@
 var nbLignes;
 var nbColonnes;
 var sourceImg;
-var img;
+var img;    // image sur le puzzle
 var etatDeJeu;
 var afficheNumeros;
 var champDeplace;
 var nbDeplacements = 1;
-var imgAffiche = false;
-var imgvue;
-var ounissa= true;
+var parts = [];
+var victoire = true;
 
 function startGame(){
     nbDeplacements = 1;
     champDeplace = document.getElementById("nbDeplacements");
     champDeplace.textContent=0;
     etatDeJeu = "onJeu";
-    demarrer();
+    window.addEventListener("keydown", flecheTouchee, false);  // Pour utiliser les flêches
+    brasser();
 }
 
-function demarrer(){
-    // crée l'image a montrer lorsque l'utilisateur clique Afficher l'image
-    imgAffiche = false;
+function afficheImage(){
     sourceImg = document.getElementById("imgUrl").value;
-    imgvue = document.createElement("img");
-    imgvue.setAttribute("src",sourceImg);
-    imgvue.setAttribute("id","imgOrigin");
-    imgvue.style.width = "100%";
-    imgvue.style.height = "100%";
-    var div = document.getElementById("imgOriginal");
-    div.appendChild(imgvue);
-
     nbLignes = document.getElementById("nbLignes").value;
     nbColonnes = document.getElementById("nbColonnes").value;
 
@@ -39,7 +29,7 @@ function demarrer(){
     if(sourceImg == "")
         alert ('svp choisissez une image valide');
 
-    window.addEventListener("keydown", flecheTouchee, false);  // Pour utiliser les flêches
+
      // Si il y a encore du contenu dans la zone de jeu, on l'efface pour recommencer
     var puzzle = document.getElementById("puzzle");
     if(puzzle.hasChildNodes()){
@@ -47,34 +37,88 @@ function demarrer(){
             puzzle.removeChild(puzzle.firstChild);
         }
     }
-
+    // Image qui sera dans le puzzle
+    img = document.createElement("img");
+    img.setAttribute("src",sourceImg);
+    var width_size = Math.floor(img.width/nbColonnes);
+    var height_size = Math.floor(img.height/nbLignes);
+    console.log('width : '+width_size);
+    console.log('height : '+height_size);
     // Creation d'une table qui contiendra le puzzle
     var table = document.createElement("table");
     table.setAttribute("align","center");
     table.setAttribute("id","table");
+    console.log('width : '+img.width);
+    console.log('height : '+ img.height);
     var valueCell = 1;
     for (var i = 0; i < nbLignes; i++){
         tr = document.createElement("tr");
+        tr.setAttribute("id",""+i);
         for(var j = 0; j < nbColonnes; j++){
             td = document.createElement("td");
             td.setAttribute("id","("+i+","+j+")");
-            span = document.createElement("span");
-            span.setAttribute("class","numbers");
-            span.textContent = valueCell++;
-            td.style.backgroundImage = 'url(' + sourceImg + ')';
-            td.style.backgroundPosition = - j*150 +'px' + - i* 150 +'px';
-            td.appendChild(span);
+            console.log('width td : ' + td.style.width);
+            console.log('height td ' + td.style.height);
             if (i+1 == nbLignes && j+1 == nbColonnes)
             {
             // on ne met pas de valeur sur la case inferieur droite
                 td.style.backgroundColor = "gray";
+            } else {
+                td.style.width = width_size + 'px';
+                td.style.height = height_size + 'px';
+                td.style.backgroundImage = 'url(' + sourceImg + ')';
+                td.style.backgroundPosition = -j * width_size +"px "+ -i * height_size+"px";
+                span = document.createElement("span");
+                span.setAttribute("class","numbers");
+                span.textContent = valueCell++;
+                td.appendChild(span);
             }
             tr.appendChild(td);
         }
         table.appendChild(tr);
     }
     puzzle.appendChild(table);
-    prepareImgs();
+}
+
+function brasser(){
+    var tab = [];
+    var randomi, randomj, choisi, ancienGrise, lastPos, currentGreyId;
+    var count = nbLignes * nbColonnes;
+
+    currentGreyId = ""+"("+ (nbLignes - 1) +","+ (nbColonnes - 1) +")";
+    for (var i = 0; i < count; i++){
+        if(choisi != null)
+            choisi.remove();
+        if(ancienGrise != null)
+            ancienGrise.remove();
+        randomi = Math.floor(Math.random() * (nbLignes - 1) );
+        randomj = Math.floor(Math.random() * (nbColonnes - 1) );
+        choisi = document.getElementById("("+randomi+","+randomj+")");
+
+        if(choisi.style.backgroundColor == "gray")
+        {
+            //console.log('choisi is grey');
+        } else {
+            lastPos = choisi.style.backgroundPosition;  // backgroundPosition de choisi
+            choisi.removeAttribute("backgroundPosition");
+            choisi.removeAttribute("backgroundImage");
+            console.log('attr removed'+ choisi.style.backgroundPosition);
+            choisi.style.backgroundColor = "gray";
+
+            ancienGrise = document.getElementById(''+currentGreyId);  //la case grise
+
+            choisi.setAttribute ("id", ''+currentGreyId);
+            console.log('new attr : '+ choisi.id);
+
+            ancienGrise.removeAttribute("id");
+            ancienGrise.setAttribute ("id", ''+"("+randomi+","+randomj+")");  // changer le id de la case grise
+            ancienGrise.style.backgroundImage = 'url(' + sourceImg + ')';
+            ancienGrise.style.backgroundPosition = ''+lastPos;
+            currentGreyId = ""+"("+ randomi +","+ randomj +")";
+
+        }
+
+    }
 }
 
 function placeHasard(){
@@ -111,14 +155,40 @@ function flecheTouchee(key){
 }
 
 function checkVictoire(){ //En cas de victoire on affiche le message gagnant
-var winboard= document.getElementById("winningBoard");
-   if(state=="winning"){
-           nbDeplacementsVic.textContent+=" " + champDeplace.textContent; //affiche le score du gagnant
-           victoire.style.visibility="visible";//rend le message gagnant visible
-           window.removeEventListener("keydown", checkKeyPress, false); //empeche le joueur d'utiliser les fleches une fois le jeu finit
-   }
+    console.log("salut");
+    var tab = document.getElementById("table");
+    for (var i=0; i< nbLignes;i++){
+        var t = document.getElementById(""+i);  // get the first row from the table
+        for(var j=0; j<nbColonnes;j++){
+            if (t.childNodes[j].id == "("+i+","+j+")"){
+                continue;
+            } else {
+                victoire = false;
+                //console.log('valeur victoire'+ victoire);
+            }
+        }
+        var div = document.getElementById("victoire");
+        var nbDeplacementsVic = document.getElementById("nbDeplacementsVic");
+        nbDeplacementsVic.textContent=""+0;
+        if(victoire){
+            alert('Bravo Champion !!');
+            nbDeplacementsVic.textContent+=" " + champDeplace.textContent;
+            div.style.visibility="visible";
+            window.removeEventListener("keydown", flecheTouchee, false); // Annuler l'utilisation des flêches
+            break;
+        }
+    }
 }
 
+function haut(){
+
+}
+
+function bas(){
+}
+
+function gauche(){}
+function droite(){}
 //Fonction pour afficher les numeros des images
 function montreNumeros(checkbox){
     var elements = document.getElementsByClassName("numbers");
@@ -132,49 +202,4 @@ function montreNumeros(checkbox){
                 elements[i].style.visibility="hidden";
         }
     }
-}
-
-function afficheImg(){
-    if (! imgAffiche)
-    {
-        document.getElementById("imgOriginal").style.visibility = "visible";
-        imgAffiche = true;
-    }
-}
-
-function effaceImg(){
-    imgAffiche = false;
-    document.getElementById("imgOriginal").style.visibility = "hidden";
-}
-
-// Fonction pour dividir l'image en sous images
-function prepareImgs(){
-    var canvas = document.createElement('canvas'), // In memory canvas
-    ctx    = canvas.getContext("2d"),
-    parts  = [],                               // to store base64 strings
-    img    = new Image();
-
-    img.onload = split_img;
-    img.src = sourceImg;
-    function split_img(){
-      var w2 = Math.floor(600  / nbColonnes),
-          h2 = Math.floor(600/ nbLignes);
-      canvas.width  = w2;
-      canvas.height = h2;
-      var long = nbLignes * nbColonnes;
-      for(var i = 0; i < long; i++){
-        var x = (i % nbColonnes )* -w2,//(-w2*i) % (w2 * nbColonnes),
-            y = Math.floor(i / nbColonnes) * -h2;//(h2*i) <= h2 ? 0 : -h2 ;
-        ctx.drawImage(this, x, y, w2 , h2 ); // img, x, y, w, h
-        parts.push( canvas.toDataURL() );     // ("image/jpeg") for jpeg
-        // ---------- JUST TO TEST
-        var slicedImage = document.createElement("img");
-        slicedImage.src = parts[i];
-        var div = document.getElementById("test");
-        div.appendChild( slicedImage );
-
-        // ----------
-      }
-      console.log( parts );
-    };
 }
