@@ -42,14 +42,10 @@ function afficheImage(){
     img.setAttribute("src",sourceImg);
     var width_size = Math.floor(img.width/nbColonnes);
     var height_size = Math.floor(img.height/nbLignes);
-    console.log('width : '+width_size);
-    console.log('height : '+height_size);
     // Creation d'une table qui contiendra le puzzle
     var table = document.createElement("table");
     table.setAttribute("align","center");
     table.setAttribute("id","table");
-    console.log('width : '+img.width);
-    console.log('height : '+ img.height);
     var valueCell = 1;
     for (var i = 0; i < nbLignes; i++){
         tr = document.createElement("tr");
@@ -57,12 +53,14 @@ function afficheImage(){
         for(var j = 0; j < nbColonnes; j++){
             td = document.createElement("td");
             td.setAttribute("id","("+i+","+j+")");
-            console.log('width td : ' + td.style.width);
-            console.log('height td ' + td.style.height);
             if (i+1 == nbLignes && j+1 == nbColonnes)
             {
             // on ne met pas de valeur sur la case inferieur droite
                 td.style.backgroundColor = "gray";
+                span = document.createElement("span");
+                span.setAttribute("class","numbers");
+                span.textContent = nbLignes*nbColonnes;
+                td.appendChild(span);
             } else {
                 td.style.width = width_size + 'px';
                 td.style.height = height_size + 'px';
@@ -81,49 +79,38 @@ function afficheImage(){
 }
 
 function brasser(){
-    var tab = [];
-    var randomi, randomj, choisi, ancienGrise, lastPos, currentGreyId;
+    var randomi, randomj, newGray, ancienGrise, lastPos, currentGreyId, valueCell;
     var count = nbLignes * nbColonnes;
 
     currentGreyId = ""+"("+ (nbLignes - 1) +","+ (nbColonnes - 1) +")";
     for (var i = 0; i < count; i++){
-        if(choisi != null)
-            choisi.remove();
-        if(ancienGrise != null)
-            ancienGrise.remove();
-        randomi = Math.floor(Math.random() * (nbLignes - 1) );
-        randomj = Math.floor(Math.random() * (nbColonnes - 1) );
-        choisi = document.getElementById("("+randomi+","+randomj+")");
+        randomi = Math.floor(Math.random() * (nbLignes) );
+        randomj = Math.floor(Math.random() * (nbColonnes) );
 
-        if(choisi.style.backgroundColor == "gray")
+        if(randomi == 2 && randomj == 2)
         {
             //console.log('choisi is grey');
         } else {
-            lastPos = choisi.style.backgroundPosition;  // backgroundPosition de choisi
-            choisi.removeAttribute("backgroundPosition");
-            choisi.removeAttribute("backgroundImage");
-            console.log('attr removed'+ choisi.style.backgroundPosition);
-            choisi.style.backgroundColor = "gray";
+            newGray = document.getElementById("("+randomi+","+randomj+")");
+            valueCell = newGray.firstChild.innerHTML;   // recupère la valeur d'indice de la case
+            lastPos = newGray.style.backgroundPosition;  // backgroundPosition de last grey
+            newGray.style.backgroundPosition = null;    //removeAttribute("backgroundPosition");
+            newGray.style.backgroundImage = null;       //("backgroundImage");
+            newGray.style.backgroundColor = "gray";
+            newGray.firstChild.textContent = ""+count;  // change la valeur de l'indice de la nouvelle case grise
 
-            ancienGrise = document.getElementById(''+currentGreyId);  //la case grise
+            ancienGrise = document.getElementById("("+ (nbLignes - 1) +","+ (nbColonnes - 1) +")");  //la case grise
 
-            choisi.setAttribute ("id", ''+currentGreyId);
-            console.log('new attr : '+ choisi.id);
+            newGray.setAttribute ("id", ''+currentGreyId);
+            ancienGrise.setAttribute ("id", ''+"("+randomi+","+randomj+")");    // changer le id de la case grise
 
-            ancienGrise.removeAttribute("id");
-            ancienGrise.setAttribute ("id", ''+"("+randomi+","+randomj+")");  // changer le id de la case grise
             ancienGrise.style.backgroundImage = 'url(' + sourceImg + ')';
             ancienGrise.style.backgroundPosition = ''+lastPos;
-            currentGreyId = ""+"("+ randomi +","+ randomj +")";
+            ancienGrise.firstChild.textContent = valueCell;
 
         }
 
     }
-}
-
-function placeHasard(){
-    var celluleID = "("+Math.floor(Math.random()*(nbLignes))+","+Math.floor(Math.random()*(nbColonnes))+")";
-    var cellule = document.getElementById(""+celluleID);
 }
 
 function creeCellule(cellule, valeur){
