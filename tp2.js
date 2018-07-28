@@ -6,8 +6,8 @@ var etatDeJeu;
 var afficheNumeros;
 var champDeplace;
 var nbDeplacements = 1;
-var parts = [];
 var victoire = true;
+var jeuActuel, count, currentGreyId, com;
 
 function startGame(){
     nbDeplacements = 1;
@@ -55,7 +55,6 @@ function afficheImage(){
             td.setAttribute("id","("+i+","+j+")");
             if (i+1 == nbLignes && j+1 == nbColonnes)
             {
-            // on ne met pas de valeur sur la case inferieur droite
                 td.style.backgroundColor = "gray";
                 span = document.createElement("span");
                 span.setAttribute("class","numbers");
@@ -79,103 +78,188 @@ function afficheImage(){
 }
 
 function brasser(){
-    var randomi, randomj, newGray, ancienGrise, lastPos, currentGreyId, valueCell;
-    var count = nbLignes * nbColonnes;
+    var randomi, randomj, newGray, lastGray, lastPos, valueCell;
+    count = nbLignes * nbColonnes;
 
     currentGreyId = ""+"("+ (nbLignes - 1) +","+ (nbColonnes - 1) +")";
-    for (var i = 0; i < count; i++){
-        randomi = Math.floor(Math.random() * (nbLignes) );
-        randomj = Math.floor(Math.random() * (nbColonnes) );
-
-        if(randomi == 2 && randomj == 2)
-        {
-            //console.log('choisi is grey');
-        } else {
-            newGray = document.getElementById("("+randomi+","+randomj+")");
-            valueCell = newGray.firstChild.innerHTML;   // recupère la valeur d'indice de la case
-            lastPos = newGray.style.backgroundPosition;  // backgroundPosition de last grey
-            newGray.style.backgroundPosition = null;    //removeAttribute("backgroundPosition");
-            newGray.style.backgroundImage = null;       //("backgroundImage");
-            newGray.style.backgroundColor = "gray";
-            newGray.firstChild.textContent = ""+count;  // change la valeur de l'indice de la nouvelle case grise
-
-            ancienGrise = document.getElementById("("+ (nbLignes - 1) +","+ (nbColonnes - 1) +")");  //la case grise
-
-            newGray.setAttribute ("id", ''+currentGreyId);
-            ancienGrise.setAttribute ("id", ''+"("+randomi+","+randomj+")");    // changer le id de la case grise
-
-            ancienGrise.style.backgroundImage = 'url(' + sourceImg + ')';
-            ancienGrise.style.backgroundPosition = ''+lastPos;
-            ancienGrise.firstChild.textContent = valueCell;
-
+    for (var i = 0; i < nbLignes; i++){
+        for(var j = 0; j < nbColonnes; j++){
+            randomi = Math.floor(Math.random() * (nbLignes) );
+            randomj = Math.floor(Math.random() * (nbColonnes) );
+    
+            if(randomi == 2 && randomj == 2)
+            {
+                // pour omettre la case grise
+            } else {
+                newGray = document.getElementById("("+randomi+","+randomj+")");
+                valueCell = newGray.firstChild.innerHTML;   // recupère la valeur d'indice de la case
+                lastPos = newGray.style.backgroundPosition;  // backgroundPosition de last grey
+                newGray.style.backgroundPosition = null;    //removeAttribute("backgroundPosition");
+                newGray.style.backgroundImage = null;       //("backgroundImage");
+                newGray.style.backgroundColor = "gray";
+                newGray.firstChild.textContent = ""+count;  // change la valeur de l'indice de la nouvelle case grise
+    
+                lastGray = document.getElementById("("+ (nbLignes - 1) +","+ (nbColonnes - 1) +")");  //la case grise
+    
+                newGray.setAttribute ("id", ''+currentGreyId);
+                lastGray.setAttribute ("id", ''+"("+randomi+","+randomj+")");    // changer le id de la case grise
+    
+                lastGray.style.backgroundImage = 'url(' + sourceImg + ')';
+                lastGray.style.backgroundPosition = ''+lastPos;
+                lastGray.firstChild.textContent = valueCell;
+                lastGray.style.backgroundColor = null;
+            }
         }
-
     }
+    fillJeuActuel();
 }
 
-function creeCellule(cellule, valeur){
-    cellule.textContent = valeur;
-    cellule.style.backgroundColor = "red";
+function fillJeuActuel(){
+    // Initialise le tableau de jeu courant
+    jeuActuel = [];
+    for (var i = 0 ; i < nbLignes; i++) {
+        jeuActuel[i] = [];
+    }
+    var iter = document.getElementById("table");
+    for (var i=0; i< nbLignes;i++){
+        var t = document.getElementById(""+i);  // get the first row from the table
+        for(var j=0; j<nbColonnes;j++){
+             jeuActuel[i][j] = t.childNodes[j].id;
+        }
+    }
 }
 // Fonction pour controler les mouvements des flêches
 function flecheTouchee(key){
     if (key.keyCode === 38){
-        champDeplace.textContent= nbDeplacements++;
 		haut();
 		checkVictoire();
 	}
 	if (key.keyCode === 40){
-	    champDeplace.textContent= nbDeplacements++;
 		bas();
 		checkVictoire();
 	}
 	if (key.keyCode === 37){
-		champDeplace.textContent= nbDeplacements++;
 		gauche();
 		checkVictoire();
 	}
 	if (key.keyCode === 39){
-		champDeplace.textContent= nbDeplacements++;
 		droite();
 		checkVictoire();
 	}
 }
 
 function checkVictoire(){ //En cas de victoire on affiche le message gagnant
-    console.log("salut");
     var tab = document.getElementById("table");
-    for (var i=0; i< nbLignes;i++){
+    com = 1;
+    for (var i=0; i < nbLignes; i++){
         var t = document.getElementById(""+i);  // get the first row from the table
-        for(var j=0; j<nbColonnes;j++){
+        for(var j=0; j < nbColonnes; j++){
             if (t.childNodes[j].id == "("+i+","+j+")"){
                 continue;
             } else {
                 victoire = false;
-                //console.log('valeur victoire'+ victoire);
+                console.log('voictoire '+ victoire + com);
+                com++;
+                break;
             }
         }
-        var div = document.getElementById("victoire");
-        var nbDeplacementsVic = document.getElementById("nbDeplacementsVic");
-        nbDeplacementsVic.textContent=""+0;
-        if(victoire){
-            alert('Bravo Champion !!');
-            nbDeplacementsVic.textContent+=" " + champDeplace.textContent;
-            div.style.visibility="visible";
-            window.removeEventListener("keydown", flecheTouchee, false); // Annuler l'utilisation des flêches
-            break;
+    }
+    var div = document.getElementById("victoire");
+    var nbDeplacementsVic = document.getElementById("nbDeplacementsVic");
+    if(victoire){
+        alert('Bravo Champion !!');
+        nbDeplacementsVic.textContent =" En " + champDeplace.textContent + " Déplacement(s)";
+        div.style.visibility="visible";
+        window.removeEventListener("keydown", flecheTouchee, false); // Annuler l'utilisation des flêches
+    }
+    victoire = true;
+}
+
+function haut(){
+    // retourne les coordonnées de la case grise dans le jeu.
+    var greyCoordonates = getGreyCoordonates();
+    if(greyCoordonates[0] == 0){
+    } else {
+        champDeplace.textContent= nbDeplacements++;
+        var idNeighbour = jeuActuel[greyCoordonates[0]-1][greyCoordonates[1]];
+        switchPieces(idNeighbour, greyCoordonates);
+    }
+}
+
+function bas(){
+    // retourne les coordonnées de la case grise dans le jeu.
+    var greyCoordonates = getGreyCoordonates();
+    if(greyCoordonates[0] == nbLignes-1){
+    } else {
+        champDeplace.textContent= nbDeplacements++;
+        var idNeighbour = jeuActuel[greyCoordonates[0]+1][greyCoordonates[1]];
+        switchPieces(idNeighbour, greyCoordonates);
+    }
+}
+
+function gauche(){
+    // retourne les coordonnées de la case grise dans le jeu.
+    var greyCoordonates = getGreyCoordonates();
+    if(greyCoordonates[1] == 0){
+    } else {
+        champDeplace.textContent= nbDeplacements++;
+        var idNeighbour = jeuActuel[greyCoordonates[0]][greyCoordonates[1]-1];
+        switchPieces(idNeighbour, greyCoordonates);
+    }
+}
+
+function droite(){
+    // retourne les coordonnées de la case grise dans le jeu.
+    var greyCoordonates = getGreyCoordonates();
+    if(greyCoordonates[1] == nbColonnes-1){
+    } else {
+        champDeplace.textContent= nbDeplacements++;
+        var idNeighbour = jeuActuel[greyCoordonates[0]][greyCoordonates[1]+1];
+        switchPieces(idNeighbour, greyCoordonates);
+    }
+}
+
+function switchPieces(idNeighbour, greyCoordonates){
+    var neighbourCoordonates = [];
+    var neighbour = document.getElementById(idNeighbour);
+    var valueCell = neighbour.firstChild.innerHTML;
+    var lastPos = neighbour.style.backgroundPosition;
+    neighbour.style.backgroundPosition = null;
+    neighbour.style.backgroundImage = null;
+    neighbour.style.backgroundColor = "gray";
+    neighbour.firstChild.textContent = count;  // change la valeur de l'id de la nouvelle case grise
+
+    var grey = document.getElementById(currentGreyId);
+
+    neighbour.setAttribute ("id",currentGreyId);
+    grey.setAttribute ("id", idNeighbour);    // changer le id de la case grise
+    grey.style.backgroundImage = 'url(' + sourceImg + ')';
+    grey.style.backgroundPosition = lastPos;
+    grey.firstChild.textContent = valueCell;
+    grey.style.backgroundColor = null;
+
+    // met a jour le jeuActuel
+    fillJeuActuel();
+}
+
+// Retourne les coordonnées de la piece grise dans le jeu actuel
+function getGreyCoordonates(){
+    var  idPiece, td;
+    var grayCoordonates = [];
+    for(var i = 0; i < nbLignes; i++){
+        for(var j = 0; j < nbColonnes; j++){
+        idPiece = jeuActuel[i][j];
+        td = document.getElementById(''+idPiece);
+            if(td.style.backgroundColor == "gray")
+            {
+               grayCoordonates[0] = i;
+               grayCoordonates[1] = j;
+               return grayCoordonates;
+            }
         }
     }
 }
 
-function haut(){
-
-}
-
-function bas(){
-}
-
-function gauche(){}
-function droite(){}
 //Fonction pour afficher les numeros des images
 function montreNumeros(checkbox){
     var elements = document.getElementsByClassName("numbers");
@@ -189,4 +273,14 @@ function montreNumeros(checkbox){
                 elements[i].style.visibility="hidden";
         }
     }
+}
+
+function recommencer(){
+    var div = document.getElementById("victoire");
+    var nbDeplacementsVic = document.getElementById("nbDeplacementsVic");
+    document.getElementById('nbDeplacements').textContent = "";
+    nbDeplacements = 1;
+    nbDeplacementsVic.textContent =""+0;
+    div.style.visibility="hidden";
+    afficheImage();
 }
